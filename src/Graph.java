@@ -87,7 +87,7 @@ public class Graph {
         }
     }
 
-    public Bag<Integer>[] getAdj(){
+    public Bag<Integer>[] getAdj() {
         return this.adj;
     }
 
@@ -107,7 +107,7 @@ public class Graph {
     public void addEdge(int v, int w) {
         validateVertex(v);
         validateVertex(w);
-        E++;        
+        E++;
         adj[v].add(w);
         adj[w].add(v);
     }
@@ -153,8 +153,9 @@ public class Graph {
     }
 
     public boolean isConnected() {
-        if (V <= 1) return true; // grafos com 0 ou 1 vertices sao conexos
-        
+        if (V <= 1)
+            return true; // grafos com 0 ou 1 vertices sao conexos
+
         boolean[] visited = new boolean[V + 1];
         int i;
         // encontra um vértice com grau maior que 0
@@ -168,11 +169,11 @@ public class Graph {
 
         // verifica se todos os vértices com grau maior que 0 foram visitados
         for (int j = 1; j <= V; j++) {
-            if (!visited[j]) return false;
+            if (!visited[j])
+                return false;
         }
         return true;
     }
-
 
     public void removeEdge(int v, int w) {
         // Remove a aresta entre v e w, se existir
@@ -198,12 +199,43 @@ public class Graph {
                 newW.add(x);
         }
         adj[w] = newW;
-        
+
         if (found) {
             E--;
         }
     }
 
+    public boolean isEulerian() {
+        if (!isConnected()) {
+            return false; // não é conexo
+        }
 
+        // conta quantos vértices têm grau ímpar
+        int oddCount = 0;
+        for (int v = 1; v <= V; v++) {
+            if (degree(v) % 2 != 0) {
+                oddCount++;
+            }
+        }
+
+        // Euleriano se todos os graus forem pares
+        return oddCount == 0;
+    }
+
+    public boolean isSemiEulerian() {
+        if (!isConnected()) {
+            return false;
+        }
+
+        int oddCount = 0;
+        for (int v = 1; v <= V; v++) {
+            if (degree(v) % 2 != 0) {
+                oddCount++;
+            }
+        }
+
+        // Semi-Euleriano se exatamente 2 vértices têm grau ímpar
+        return oddCount == 2;
+    }
 
 }
