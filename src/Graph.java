@@ -8,7 +8,7 @@ public class Graph {
 
     private final int V;
     private int E;
-    private Bag<Integer>[] adj;
+    public Bag<Integer>[] adj;
 
     public Graph(int V) {
         if (V < 0)
@@ -87,6 +87,10 @@ public class Graph {
         }
     }
 
+    public Bag<Integer>[] getAdj(){
+        return this.adj;
+    }
+
     public int V() {
         return V;
     }
@@ -137,7 +141,7 @@ public class Graph {
         System.out.println(g);
     }
 
-        private void dfsUtil(int v, boolean[] visitado) {
+    private void dfsUtil(int v, boolean[] visitado) {
         visitado[v] = true;
         for (int vizinho : adj[v]) {
             if (!visitado[vizinho]) {
@@ -151,10 +155,12 @@ public class Graph {
 
         int i;
         for (i = 1; i <= V; i++) {
-            if (adj[i] != null && adj[i].size() > 0) break;
+            if (adj[i] != null && adj[i].size() > 0)
+                break;
         }
 
-        if (i == V + 1) return true;
+        if (i == V + 1)
+            return true;
 
         dfsUtil(i, visited);
 
@@ -174,14 +180,17 @@ public class Graph {
 
         Bag<Integer> newV = new Bag<>();
         for (int x : adj[v]) {
-            if (x != w) newV.add(x);
-            else found = true;
+            if (x != w)
+                newV.add(x);
+            else
+                found = true;
         }
         adj[v] = newV;
 
         Bag<Integer> newW = new Bag<>();
         for (int x : adj[w]) {
-            if (x != v) newW.add(x);
+            if (x != v)
+                newW.add(x);
         }
         adj[w] = newW;
 
