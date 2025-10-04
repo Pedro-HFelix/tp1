@@ -7,15 +7,20 @@ import java.util.List;
 public class Naive {
 
     public static List<int[]> foundBridge(Graph g) {
+        // lista das arestas-ponte encontradas
         List<int[]> bridge = new ArrayList<>();
 
+        // percorre todas as arestas do grafo
         for (int u = 1; u <= g.V(); u++) {
             for (int v : g.adj(u)) {
                 if (u < v) { 
+                    // remove a aresta (u, v) temporariamente
                     g.removeEdge(u, v);
+                    // verifica se o grafo ainda é conexo, se não for, (u, v) é uma aresta-ponte
                     if (!g.isConnected()) {
                         bridge.add(new int[]{u, v});
                     }
+                    // adiciona a aresta (u, v) de volta
                     g.addEdge(u, v);
                 }
             }

@@ -71,7 +71,7 @@ public class Graph {
         if (V < 0)
             throw new IllegalArgumentException("Number of vertices must be non-negative");
 
-        adj = (Bag<Integer>[]) new Bag[V];
+        adj = (Bag<Integer>[]) new Bag[V + 1];
         for (int v = 1; v <= V; v++) {
             adj[v] = new Bag<Integer>();
         }
@@ -107,7 +107,7 @@ public class Graph {
     public void addEdge(int v, int w) {
         validateVertex(v);
         validateVertex(w);
-        E++;
+        E++;        
         adj[v].add(w);
         adj[w].add(v);
     }
@@ -141,44 +141,48 @@ public class Graph {
         System.out.println(g);
     }
 
-    private void dfsUtil(int v, boolean[] visitado) {
-        visitado[v] = true;
-        for (int vizinho : adj[v]) {
-            if (!visitado[vizinho]) {
-                dfsUtil(vizinho, visitado);
+    private void dfsUtil(int v, boolean[] visited) {
+        visited[v] = true;
+        // percorre todos os vértices adjacentes a v
+        for (int neighbor : adj[v]) {
+            // se o vértice ainda não foi visitado, chama dfsUtil recursivamente
+            if (!visited[neighbor]) {
+                dfsUtil(neighbor, visited);
             }
         }
     }
 
     public boolean isConnected() {
+        if (V <= 1) return true; // grafos com 0 ou 1 vertices sao conexos
+        
         boolean[] visited = new boolean[V + 1];
-
         int i;
+        // encontra um vértice com grau maior que 0
         for (i = 1; i <= V; i++) {
             if (adj[i] != null && adj[i].size() > 0)
                 break;
         }
 
-        if (i == V + 1)
-            return true;
-
+        // inicia DFS a partir desse vértice com grau maior que 0
         dfsUtil(i, visited);
 
+        // verifica se todos os vértices com grau maior que 0 foram visitados
         for (int j = 1; j <= V; j++) {
-            if (adj[j] != null && adj[j].size() > 0 && !visited[j]) {
-                return false;
-            }
+            if (!visited[j]) return false;
         }
         return true;
     }
 
+
     public void removeEdge(int v, int w) {
+        // Remove a aresta entre v e w, se existir
         validateVertex(v);
         validateVertex(w);
 
         boolean found = false;
-
         Bag<Integer> newV = new Bag<>();
+
+        // Reconstrói a lista de adjacência de v sem w
         for (int x : adj[v]) {
             if (x != w)
                 newV.add(x);
@@ -187,16 +191,19 @@ public class Graph {
         }
         adj[v] = newV;
 
+        // Reconstrói a lista de adjacência de w sem v
         Bag<Integer> newW = new Bag<>();
         for (int x : adj[w]) {
             if (x != v)
                 newW.add(x);
         }
         adj[w] = newW;
-
+        
         if (found) {
             E--;
         }
     }
+
+
 
 }
