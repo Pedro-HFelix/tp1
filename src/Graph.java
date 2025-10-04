@@ -1,3 +1,4 @@
+package src;
 
 import java.util.NoSuchElementException;
 import java.util.Stack;
@@ -134,6 +135,59 @@ public class Graph {
         FileGraph fg = new FileGraph("t.txt");
         Graph g = new Graph(fg);
         System.out.println(g);
+    }
+
+        private void dfsUtil(int v, boolean[] visitado) {
+        visitado[v] = true;
+        for (int vizinho : adj[v]) {
+            if (!visitado[vizinho]) {
+                dfsUtil(vizinho, visitado);
+            }
+        }
+    }
+
+    public boolean isConnected() {
+        boolean[] visited = new boolean[V + 1];
+
+        int i;
+        for (i = 1; i <= V; i++) {
+            if (adj[i] != null && adj[i].size() > 0) break;
+        }
+
+        if (i == V + 1) return true;
+
+        dfsUtil(i, visited);
+
+        for (int j = 1; j <= V; j++) {
+            if (adj[j] != null && adj[j].size() > 0 && !visited[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void removeEdge(int v, int w) {
+        validateVertex(v);
+        validateVertex(w);
+
+        boolean found = false;
+
+        Bag<Integer> newV = new Bag<>();
+        for (int x : adj[v]) {
+            if (x != w) newV.add(x);
+            else found = true;
+        }
+        adj[v] = newV;
+
+        Bag<Integer> newW = new Bag<>();
+        for (int x : adj[w]) {
+            if (x != v) newW.add(x);
+        }
+        adj[w] = newW;
+
+        if (found) {
+            E--;
+        }
     }
 
 }
