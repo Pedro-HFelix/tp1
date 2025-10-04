@@ -1,52 +1,61 @@
 import networkx as nx
 import random
 
+def conectar_componentes(G):
+    """Garante que o grafo seja conexo, conectando componentes."""
+    componentes = list(nx.connected_components(G))
+    while len(componentes) > 1:
+        c1 = random.choice(list(componentes[0]))
+        c2 = random.choice(list(componentes[1]))
+        G.add_edge(c1, c2)
+        componentes = list(nx.connected_components(G))
+    return G
+
+def ajustar_para_euleriano(G):
+    """Ajusta o grafo para que todos os vértices tenham grau par."""
+    graus = dict(G.degree())
+    impares = [v for v, g in graus.items() if g % 2 == 1]
+    while impares:
+        u = impares.pop()
+        v = impares.pop()
+        if not G.has_edge(u, v):
+            G.add_edge(u, v)
+        else:
+            G.remove_edge(u, v)
+    return G
+
+def ajustar_para_semi_euleriano(G):
+    """Ajusta o grafo para que exatamente 2 vértices tenham grau ímpar."""
+    graus = dict(G.degree())
+    impares = [v for v, g in graus.items() if g % 2 == 1]
+    while len(impares) > 2:
+        u = impares.pop()
+        v = impares.pop()
+        if not G.has_edge(u, v):
+            G.add_edge(u, v)
+        else:
+            G.remove_edge(u, v)
+    return G
+
 def gerar_grafo(tipo, n_vertices, n_arestas, nome_arquivo="grafo.txt"):
     G = nx.Graph()
     G.add_nodes_from(range(1, n_vertices+1))
 
-    # cria arestas aleatórias até atingir n_arestas
+    # adiciona arestas aleatórias até atingir o número desejado
     while G.number_of_edges() < n_arestas:
         u, v = random.sample(range(1, n_vertices+1), 2)
         if not G.has_edge(u, v):
             G.add_edge(u, v)
 
-    graus = dict(G.degree())
-    impares = [v for v, g in graus.items() if g % 2 == 1]
+    # garante conectividade
+    G = conectar_componentes(G)
 
+    # ajusta conforme o tipo
     if tipo == "euleriano":
-        # emparelhar todos os ímpares
-        while len(impares) >= 2:
-            u = impares.pop()
-            v = impares.pop()
-            if not G.has_edge(u, v):
-                G.add_edge(u, v)
-            else:
-                # se já existe, conecta a outro vértice
-                w = random.choice([x for x in range(1, n_vertices+1) if x not in (u,v)])
-                G.add_edge(u, w)
-            graus = dict(G.degree())
-            impares = [v for v, g in graus.items() if g % 2 == 1]
-
+        G = ajustar_para_euleriano(G)
     elif tipo == "semi-euleriano":
-        # reduzir até sobrar 2 ímpares
-        while len(impares) > 2:
-            u = impares.pop()
-            v = impares.pop()
-            if not G.has_edge(u, v):
-                G.add_edge(u, v)
-            else:
-                w = random.choice([x for x in range(1, n_vertices+1) if x not in (u,v)])
-                G.add_edge(u, w)
-            graus = dict(G.degree())
-            impares = [v for v, g in graus.items() if g % 2 == 1]
-        if len(impares) == 0:
-            # força 2 ímpares
-            u, v = random.sample(range(1, n_vertices+1), 2)
-            if G.has_edge(u, v):
-                G.remove_edge(u, v)
-            else:
-                G.add_edge(u, v)
+        G = ajustar_para_semi_euleriano(G)
+    # se for "nao-euleriano", não ajusta nada
 
     # salva no arquivo
     with open(nome_arquivo, "w") as f:
@@ -54,8 +63,10 @@ def gerar_grafo(tipo, n_vertices, n_arestas, nome_arquivo="grafo.txt"):
         for u, v in G.edges():
             f.write(f"{u} {v}\n")
 
+    return G
 
-# lista de testes
+
+# ---------------- TESTES ----------------
 testes = [
     (100, 200),
     (1000, 3000),
