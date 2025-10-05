@@ -1,5 +1,7 @@
 package src;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
 import java.util.Set;
@@ -157,6 +159,7 @@ public class Graph {
         System.out.println(g);
     }
 
+    // Antiga busca em profundidade recursiva
     private void dfsUtil(int v, boolean[] visited) {
         visited[v] = true;
         // percorre todos os vértices adjacentes a v
@@ -168,25 +171,50 @@ public class Graph {
         }
     }
 
+    // Busca em Profundidade iterativa para evitar StackOverflow em grafos grandes
+    private void dfsIterativo(int start, boolean[] visited) {
+        Deque<Integer> stack = new ArrayDeque<>();
+        stack.push(start);
+        visited[start] = true;
+
+        while (!stack.isEmpty()) {
+            int u = stack.pop();
+            for (int neighbor : adj[u]) {
+                if (!visited[neighbor]) {
+                    visited[neighbor] = true;
+                    stack.push(neighbor);
+                }
+            }
+        }
+    }
+
     public boolean isConnected() {
-        if (V <= 1)
-            return true; // grafos com 0 ou 1 vertices sao conexos
+        if (V <= 1) return true; // grafos com 0 ou 1 vértices são conexos
 
         boolean[] visited = new boolean[V + 1];
-        int i;
-        // encontra um vértice com grau maior que 0
-        for (i = 1; i <= V; i++) {
-            if (adj[i] != null && adj[i].size() > 0)
+
+        // encontra um vértice com grau > 0 para iniciar
+        int start = -1;
+        for (int i = 1; i <= V; i++) {
+            if (adj[i] != null && adj[i].size() > 0) {
+                start = i;
                 break;
+            }
         }
 
-        // inicia DFS a partir desse vértice com grau maior que 0
-        dfsUtil(i, visited);
+        if (start == -1) {
+            // grafo sem arestas é considerado conexo
+            return true;
+        }
 
-        // verifica se todos os vértices com grau maior que 0 foram visitados
+        // inicia DFS iterativa
+        dfsIterativo(start, visited);
+
+        // verifica se todos os vértices com grau > 0 foram visitados
         for (int j = 1; j <= V; j++) {
-            if (!visited[j])
+            if (adj[j] != null && adj[j].size() > 0 && !visited[j]) {
                 return false;
+            }
         }
         return true;
     }

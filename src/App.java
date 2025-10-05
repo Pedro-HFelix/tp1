@@ -34,11 +34,11 @@ public class App {
                 System.out.println();
                 System.out.println("Aplicando o Fleury: ");
                 // Executa Fleury
-                List<int[]> res = Fleury.getEulerTour(g);
+                List<int[]> res = Fleury.getEulerTour(g,"Tarjan");
             } else if (g.isSemiEulerian()) {
                 System.out.println("O grafo é Semi-Euleriano (possui trilha Euleriana).");
                 // Executa Fleury
-                List<int[]> res = Fleury.getEulerTour(g);
+                List<int[]> res = Fleury.getEulerTour(g,"Tarjan");
             } else {
                 System.out.println("O grafo não é Euleriano.");
                 System.out.println();
