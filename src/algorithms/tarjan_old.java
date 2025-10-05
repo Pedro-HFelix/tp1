@@ -1,22 +1,56 @@
 package src.algorithms;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+
 import src.Graph;
-
-import java.util.*;
-
-public class Tarjan {
-
-
-    // Variáveis de Controle para aplicar o Tarjan a partir de um Grafo
+/**
+ * Implementação do Algoritmo de Tarjan para detecção de pontes em grafos.
+ *
+ * Referência de base:
+ * GeeksforGeeks - Bridges in a Graph (Tarjan’s Algorithm)
+ * https://www.geeksforgeeks.org/dsa/bridge-in-a-graph/
+ */
+// Classe Tarjan usada como base para a adaptação no algoritmo de Fleury
+public class tarjan_old {
+    // Variáveis de Controle para aplicar o Tarjan a partir de um Grafo (G) recebido por parâmetro
     private int V; // Número total de vértices
     private Graph G; // Grafo passado por parâmetro
+    private Set<String> bridges; // pontes
+    private boolean found;   // se a aresta requisitada foi encontrada como ponte
+    private int targetU, targetV; // aresta que queremos testar
     int time = 0; // Tempo de descoberta do Tarjan
+    
 
 
     // Aplicar o Tarjan recebendo um Grafo por parâmetro
-    public Tarjan(Graph G){
+    public tarjan_old(Graph G){
         this.G = G;
         this.time = 0;
         this.V = G.V();
+        this.bridges = new HashSet<>();
+    }
+
+    public boolean isBridge(int u, int v) {
+        this.time = 0;
+        this.found = false;
+        this.targetU = u;
+        this.targetV = v;
+
+        boolean[] visited = new boolean[V + 1];
+        int[] disc = new int[V + 1];
+        int[] low = new int[V + 1];
+        int[] parent = new int[V + 1];
+        Arrays.fill(parent, -1);
+
+        for (int i = 1; i <= V && !found; i++) {
+            if (!visited[i]) {
+                bridgeUtil(i, visited, disc, low, parent);
+            }
+        }
+        return found;
     }
 
     // Função recursiva que encontra e imprime arestas-ponte usando Busca em profundidade
@@ -25,7 +59,8 @@ public class Tarjan {
     // disc[] --> armazena o TD (tempo de descoberta) dos vértices
     // parent[] --> armazena os pais dos vértices na árvore DFS
     void bridgeUtil(int u, boolean visited[], int disc[], int low[], int parent[]) {
-
+        if (found) return; // já encontrou, não precisa continuar
+        
         // Marca o nó atual como visitado
         visited[u] = true;
 
@@ -51,12 +86,36 @@ public class Tarjan {
                 // está abaixo de u na árvore DFS, então u-v é uma ponte
                 if (low[v] > disc[u])
                     System.out.println("Aresta-ponte encontrada: (" + u + ", " + v + ")");
+                if (low[v] > disc[u]) {
+                    if ((u == targetU && v == targetV) || (u == targetV && v == targetU)) {
+                        found = true;
+                        return; // já achou, pode parar
+                    }
+                }
             }
 
             // Atualiza o valor mínimo de u para chamadas recursivas
             else if (v != parent[u])
                 low[u] = Math.min(low[u], disc[v]);
         }
+    }
+
+    public Set<String> getBridges() {
+        boolean visited[] = new boolean[V + 1];
+        int disc[] = new int[V + 1];
+        int low[] = new int[V + 1];
+        int parent[] = new int[V + 1];
+
+        for (int i = 1; i <= V; i++) {
+            parent[i] = -1;
+            visited[i] = false;
+        }
+
+        for (int i = 1; i <= V; i++)
+            if (!visited[i])
+                bridgeUtil(i, visited, disc, low, parent);
+
+        return bridges;
     }
 
     // Função baseada na Busca em Profundidade para encontrar todas as arestas-ponte.
@@ -81,6 +140,7 @@ public class Tarjan {
                 bridgeUtil(i, visited, disc, low, parent);
     }
 
+    // Testes
     public static void main(String args[]) {
         // Cria os grafos dos exemplos
         System.out.println("Aplicando o Tarjan no primeiro grafo (Bridge1):");
@@ -92,7 +152,7 @@ public class Tarjan {
         g1.addEdge(1, 4);
         g1.addEdge(4, 5);
 
-        Tarjan tarjan = new Tarjan(g1);
+        tarjan_old tarjan = new tarjan_old (g1);
         tarjan.bridge();
         System.out.println();
 
@@ -107,7 +167,7 @@ public class Tarjan {
         g2.addEdge(4, 6);
         g2.addEdge(5, 6);
 
-        Tarjan tarjan2 = new Tarjan(g2);
+        tarjan_old  tarjan2 = new tarjan_old (g2);
         tarjan2.bridge();
         System.out.println();
 
@@ -117,7 +177,7 @@ public class Tarjan {
         g3.addEdge(2, 3);
         g3.addEdge(3, 4);
 
-        Tarjan tarjan3 = new Tarjan(g3);
+        tarjan_old  tarjan3 = new tarjan_old (g3);
         tarjan3.bridge();
     }
 }

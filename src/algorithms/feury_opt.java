@@ -10,19 +10,21 @@ import src.Graph;
  * GeeksforGeeks - Fleury's Algorithm for printing Eulerian Path or Circuit
  * https://www.geeksforgeeks.org/dsa/fleurys-algorithm-for-printing-eulerian-path/
  */
-public class Fleury{
 
-    // Visit tracking sem limpar array (tick)
+// Versão mais otimizada do Fleury adaptada do GeeksForGeeks
+public class feury_opt{
+
+    // visit tracking sem limpar array
     static int[] visited;
     static int visitMark = 1;
 
-    // Clona adjacência do Graph para Set<Integer>[] (remoção O(1), sem duplicatas)
+    // Clona adjacência do Graph para Set<Integer>[] (remoção O(1) e sem duplicatas)
     @SuppressWarnings("unchecked")
     private static Set<Integer>[] cloneAdj(Graph g) {
         int V = g.V();
         Set<Integer>[] adj = new HashSet[V + 1]; // índice de 1 até V
         for (int i = 1; i <= V; i++) {
-            adj[i] = new HashSet<>();
+            adj[i] = new HashSet<>(); // (remoção O(1) e sem duplicatas)
             for (int v : g.adj[i]) {
                 adj[i].add(v);
             }
@@ -36,7 +38,7 @@ public class Fleury{
         adj[v].remove(u);
     }
 
-    // DFS iterativa para marcar alcançáveis a partir de 'start'
+    // Busca em Profundidade iterativa para marcar alcançáveis a partir de 'start'
     static void dfsMark(int start, Set<Integer>[] adj) {
         Deque<Integer> stack = new ArrayDeque<>();
         stack.push(start);
@@ -53,12 +55,28 @@ public class Fleury{
         }
     }
 
-    // Verifica se a aresta u-v é válida (não-ponte) usando método Tarjan ou Naive
+    // Verifica se a aresta u-v é válida (não-ponte) usando uma única DFS após remoção temporária
     static boolean isValidNextEdge(int u, int v, Set<Integer>[] adj) {
-        if (adj[u].size() == 1) return true; // se grau 1, a aresta é obrigatória
+        // Se u tem grau 1, a aresta é obrigatória
+        if (adj[u].size() == 1) return true;
 
-        TarjanAdj tarjan = new TarjanAdj(adj); // passa adjacência já existente
-        return !tarjan.isBridge(u, v);         // retorna true se NÃO for ponte (!false = true)
+        // Remove temporariamente u-v
+        adj[u].remove(v);
+        adj[v].remove(u);
+
+        // Marca alcançáveis a partir de u
+        visitMark++;
+        dfsMark(u, adj);
+
+        // v é alcançável sem a aresta u-v?
+        boolean reachable = (visited[v] == visitMark);
+
+        // Restaura aresta
+        adj[u].add(v);
+        adj[v].add(u);
+
+        // Se v continua alcançável, u-v não é ponte → pode usar agora
+        return reachable;
     }
 
     // Constrói caminho/ciclo Euleriano removendo arestas válidas
@@ -97,7 +115,7 @@ public class Fleury{
             visitMark = 1;
         }
 
-        // Cronometrar apenas o Tarjan em si
+        // Cronometrar apenas o núcleo
         long startTime = System.nanoTime();
 
         // Escolhe start: se houver vértice de grau ímpar, começa nele; senão, qualquer com grau > 0
@@ -126,7 +144,7 @@ public class Fleury{
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
-        System.out.println("Tempo de execução do Fleury [TARJAN-OPT]:");
+        System.out.println("Tempo de execução do Fleury [NAIVE-OPT]:");
         System.out.println("≈ " + (duration / 1_000_000.0) + " ms");
 
         return edges;
@@ -141,16 +159,17 @@ public class Fleury{
         g1.addEdge(2, 3);
         g1.addEdge(3, 4);
 
-        // Executa Fleury otimizado
+
+        // Executar Fleury otimizado
         List<int[]> res = getEulerTour(g1);
 
 
 
-        if (!res.isEmpty() && res.get(0)[0] == res.get(res.size() - 1)[1]) {
+        if (!res.isEmpty() && res.getFirst()[0] == res.getLast()[1]){
             System.out.println("Grafo eureliano: Ciclo eureliano encontrado");
         }
 
-        // Imprime o caminho Euleriano
+        // Imprime o caminho Euleriano (não será usado na medição de tempo)
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < res.size(); i++) {
             sb.append("(").append(res.get(i)[0]).append(",").append(res.get(i)[1]).append(")");
