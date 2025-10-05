@@ -8,6 +8,25 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.Stack;
 
+/**
+ * Gráfico não direcionado, usando lista de adjacência.
+ * 
+ * <p>
+ * Este código foi adaptado por Pedro Félix, Matheus Coxir e Gabriel Diniz.
+ * </p>
+ * 
+ * <p>
+ * A referência de base foi desenvolvida pelos autores originais listados
+ * abaixo.
+ * <br>
+ * Fonte: <a href=
+ * "https://algs4.cs.princeton.edu/41graph/Graph.java.html">Graph.java</a>
+ * </p>
+ * 
+ * @author Robert Sedgewick
+ * @author Kevin Wayne
+ * 
+ */
 public class Graph {
     private static final String NEWLINE = System.getProperty("line.separator");
 
@@ -109,7 +128,6 @@ public class Graph {
         return sets;
     }
 
-
     public int V() {
         return V;
     }
@@ -171,7 +189,6 @@ public class Graph {
             }
         }
     }
-
 
     public boolean isConnected() {
         if (V <= 1)

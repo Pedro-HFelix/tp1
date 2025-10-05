@@ -1,7 +1,27 @@
 package src;
+
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+/**
+ * Estrutura de dados Bag implementada com lista encadeada.
+ * 
+ * <p>
+ * Este código foi adaptado por Pedro Félix, Matheus Coxir e Gabriel Diniz.
+ * </p>
+ * 
+ * <p>
+ * A referência de base foi desenvolvida pelos autores originais listados
+ * abaixo.
+ * <br>
+ * Fonte: <a href=
+ * "https://algs4.cs.princeton.edu/13stacks/Bag.java.html">Bag.java</a>
+ * </p>
+ * 
+ * @author Robert Sedgewick
+ * @author Kevin Wayne
+ * 
+ */
 public class Bag<T extends Comparable<T>> implements Iterable<T> {
     private Node<T> first;
     private int n; // Grau de saída
