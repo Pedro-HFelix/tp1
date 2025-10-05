@@ -23,9 +23,10 @@ import java.util.NoSuchElementException;
  * 
  */
 public class Bag<T extends Comparable<T>> implements Iterable<T> {
-    private Node<T> first;
+    private Node<T> first; // início da lista encadeada
     private int n; // Grau de saída
 
+    // Nó da lista encadeada
     private static class Node<T> {
         private T item;
         private Node<T> next;
@@ -40,14 +41,17 @@ public class Bag<T extends Comparable<T>> implements Iterable<T> {
         return first == null;
     }
 
+    // retorna o número de itens/ grau do elemento
     public int size() {
         return n;
     }
 
+    // adiciona o item na ordem crescente
     public void add(T item) {
         Node<T> newNode = new Node<>();
         newNode.item = item;
 
+        // Inserção ordenada
         if (first == null || item.compareTo(first.item) <= 0) {
             newNode.next = first;
             first = newNode;
@@ -62,10 +66,12 @@ public class Bag<T extends Comparable<T>> implements Iterable<T> {
         n++;
     }
 
+    // retorna um iterador que percorre os itens na ordem crescente
     public Iterator<T> iterator() {
         return new LinkedIterator(first);
     }
 
+    // iterador da lista encadeada
     private class LinkedIterator implements Iterator<T> {
         private Node<T> current;
 
