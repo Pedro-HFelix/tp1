@@ -9,15 +9,15 @@ public class App {
 
         // lista de arquivos que você quer testar
         String[] arquivos = {
-                // "src/g100_euleriano.txt",
-                // "src/g100_semi.txt",
-                // "src/g100_nao.txt",
-                // "src/g1000_euleriano.txt",
-                // "src/g1000_semi.txt",
-                // "src/g1000_nao.txt",
-                // "src/g10000_euleriano.txt",
-                // "src/g10000_semi.txt",
-                // "src/g10000_nao.txt",
+                "src/g100_euleriano.txt",
+                "src/g100_semi.txt",
+                "src/g100_nao.txt",
+                "src/g1000_euleriano.txt",
+                "src/g1000_semi.txt",
+                "src/g1000_nao.txt",
+                "src/g10000_euleriano.txt",
+                "src/g10000_semi.txt",
+                "src/g10000_nao.txt",
                 "src/g100000_euleriano.txt",
                 "src/g100000_semi.txt",
                 "src/g100000_nao.txt"
@@ -32,27 +32,31 @@ public class App {
             if (g.isEulerian()) {
                 System.out.println("O grafo é Euleriano (possui circuito Euleriano).");
                 System.out.println();
-                System.out.println("Aplicando o Fleury: ");
-                // Executa Fleury
-                List<int[]> res = Fleury.getEulerTour(g,"Tarjan");
+
+                System.out.println(">> Euleriano - Fleury com Tarjan:");
+                List<int[]> res1 = Fleury.getEulerTour(g, "Tarjan");
+                res1 = null; // libera referência
+
+                System.out.println(">> Euleriano - Fleury com Naive:");
+                List<int[]> res2 = Fleury.getEulerTour(g, "Naive");
+                res2 = null;
+
             } else if (g.isSemiEulerian()) {
                 System.out.println("O grafo é Semi-Euleriano (possui trilha Euleriana).");
-                // Executa Fleury
-                List<int[]> res = Fleury.getEulerTour(g,"Tarjan");
+                System.out.println();
+
+                System.out.println(">> Semi-Euleriano - Fleury com Tarjan:");
+                List<int[]> res3 = Fleury.getEulerTour(g, "Tarjan");
+                res3 = null;
+
+                System.out.println(">> Semi-Euleriano - Fleury com Naive:");
+                List<int[]> res4 = Fleury.getEulerTour(g, "Naive");
+                res4 = null;
+
             } else {
-                System.out.println("O grafo não é Euleriano.");
+                System.out.println("O grafo não é Euleriano nem Semi-Euleriano.");
                 System.out.println();
             }
-
-
-            // if (res.getFirst()[0] == res.getLast()[1]){
-            //     System.out.println("Grafo eureliano: Ciclo eureliano encontrado");
-            // }
-            // // Imprime o caminho Euleriano
-            // for (int i = 0; i < res.size(); i++) {
-            //     System.out.print("("+ res.get(i)[0] + "," + res.get(i)[1] + ")");
-            //     if (i != res.size() - 1) System.out.print(", ");
-            // }
         }
     }
 }
