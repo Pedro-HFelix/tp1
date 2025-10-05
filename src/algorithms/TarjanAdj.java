@@ -2,6 +2,8 @@ package src.algorithms;
 
 import java.util.*;
 
+import src.Graph;
+
 /**
  * Implementação do Algoritmo de Tarjan para detecção de pontes em grafos.
  *
@@ -93,4 +95,51 @@ public class TarjanAdj {
             }
         }
     }
+
+        // ---------------- MAIN DE TESTE ----------------
+    public static void main(String[] args) {
+        System.out.println("Aplicando o TarjanAdj no primeiro grafo (Bridge1):");
+
+        Graph g1 = new Graph(5);
+        g1.addEdge(2, 1);
+        g1.addEdge(1, 3);
+        g1.addEdge(3, 2);
+        g1.addEdge(1, 4);
+        g1.addEdge(4, 5);
+
+        TarjanAdj tarjan1 = new TarjanAdj(g1.getAdjSet());
+        System.out.println("Aresta (4,5) é ponte? " + tarjan1.isBridge(4, 5));
+        System.out.println("Aresta (1,4) é ponte? " + tarjan1.isBridge(1, 4));
+        System.out.println();
+
+        System.out.println("Aplicando o TarjanAdj no segundo grafo (Bridge2):");
+
+        Graph g2 = new Graph(7);
+        g2.addEdge(1, 2);
+        g2.addEdge(2, 3);
+        g2.addEdge(3, 1);
+        g2.addEdge(2, 4);
+        g2.addEdge(2, 5);
+        g2.addEdge(2, 7);
+        g2.addEdge(4, 6);
+        g2.addEdge(5, 6);
+
+        TarjanAdj tarjan2 = new TarjanAdj(g2.getAdjSet());
+        System.out.println("Aresta (2,7) é ponte? " + tarjan2.isBridge(2, 7));
+        System.out.println("Aresta (2,3) é ponte? " + tarjan2.isBridge(2, 3));
+        System.out.println();
+
+        System.out.println("Aplicando o TarjanAdj no terceiro grafo (Bridge3):");
+
+        Graph g3 = new Graph(4);
+        g3.addEdge(1, 2);
+        g3.addEdge(2, 3);
+        g3.addEdge(3, 4);
+
+        TarjanAdj tarjan3 = new TarjanAdj(g3.getAdjSet());
+        System.out.println("Aresta (3,4) é ponte? " + tarjan3.isBridge(3, 4));
+        System.out.println("Aresta (2,3) é ponte? " + tarjan3.isBridge(2, 3));
+        System.out.println("Aresta (1,2) é ponte? " + tarjan3.isBridge(1, 2));
+    }
+
 }

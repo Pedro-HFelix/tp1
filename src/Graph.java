@@ -1,6 +1,8 @@
 package src;
 
+import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Set;
 import java.util.Stack;
 
 public class Graph {
@@ -90,6 +92,20 @@ public class Graph {
     public Bag<Integer>[] getAdj() {
         return this.adj;
     }
+
+    // converte Bag[] em Set[] para uso no TarjanAdj
+    @SuppressWarnings("unchecked")
+    public Set<Integer>[] getAdjSet() {
+        Set<Integer>[] sets = new HashSet[V + 1];
+        for (int i = 1; i <= V; i++) {
+            sets[i] = new HashSet<>();
+            for (int v : adj[i]) {
+                sets[i].add(v);
+            }
+        }
+        return sets;
+    }
+
 
     public int V() {
         return V;
