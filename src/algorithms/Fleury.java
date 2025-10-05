@@ -54,21 +54,37 @@ public class Fleury{
     }
 
     // Verifica se a aresta u-v é válida (não-ponte) usando método Tarjan ou Naive
-    static boolean isValidNextEdge(int u, int v, Set<Integer>[] adj) {
+    static boolean isValidNextEdge(int u, int v, Set<Integer>[] adj, Graph g, String method) {
         if (adj[u].size() == 1) return true; // se grau 1, a aresta é obrigatória
 
-        TarjanAdj tarjan = new TarjanAdj(adj); // passa adjacência já existente
-        return !tarjan.isBridge(u, v);         // retorna true se NÃO for ponte (!false = true)
+        switch (method.toLowerCase()) {
+            case "tarjan":
+                TarjanAdj tarjan = new TarjanAdj(adj);  // passa adjacência já existente
+                return !tarjan.isBridge(u, v);          // retorna true se NÃO for ponte (!false = true)
+
+            case "naive":
+                // roda o Naive e verifica se (u,v) aparece como ponte
+                for (int[] ponte : Naive.foundBridge(g)) {
+                    if ((ponte[0] == u && ponte[1] == v) || (ponte[0] == v && ponte[1] == u)) {
+                        return false; // é ponte
+                    }
+                }
+                return true;
+
+            default:
+                throw new IllegalArgumentException("Método de detecção de ponte inválido: " + method);
+        }
     }
 
+
     // Constrói caminho/ciclo Euleriano removendo arestas válidas
-    static void getEulerUtil(int u, Set<Integer>[] adj, List<int[]> edges, int totalV) {
+    static void getEulerUtil(int u, Set<Integer>[] adj, List<int[]> edges, int totalV, Graph G, String option) {
         while (!adj[u].isEmpty()) {
             List<Integer> neighbors = new ArrayList<>(adj[u]);
 
             boolean moved = false;
             for (int next : neighbors) {
-                if (adj[u].contains(next) && isValidNextEdge(u, next, adj)) {
+                if (adj[u].contains(next) && isValidNextEdge(u, next, adj, G, option)) {
                     edges.add(new int[]{u, next});
                     removeEdge(adj, u, next);
                     u = next;
@@ -88,7 +104,7 @@ public class Fleury{
     }
 
     // Função principal: retorna lista de arestas do caminho/ciclo Euleriano
-    public static List<int[]> getEulerTour(Graph g) {
+    public static List<int[]> getEulerTour(Graph g, String option) {
         Set<Integer>[] adj = cloneAdj(g); //clone
 
         // Inicializa visited uma vez
@@ -121,12 +137,12 @@ public class Fleury{
         }
 
         List<int[]> edges = new ArrayList<>();
-        getEulerUtil(start, adj, edges, g.V());
+        getEulerUtil(start, adj, edges, g.V(), g, option);
 
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
-        System.out.println("Tempo de execução do Fleury [TARJAN-OPT]:");
+        System.out.println("Tempo de execução do Fleury [" + option.toUpperCase() + "]: ");
         System.out.println("≈ " + (duration / 1_000_000.0) + " ms");
 
         return edges;
@@ -142,7 +158,7 @@ public class Fleury{
         g1.addEdge(3, 4);
 
         // Executa Fleury otimizado
-        List<int[]> res = getEulerTour(g1);
+        List<int[]> res = getEulerTour(g1,"Tarjan");
 
 
 
