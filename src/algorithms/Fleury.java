@@ -137,7 +137,7 @@ public class Fleury{
         long duration = endTime - startTime;
 
         System.out.println("Tempo de execução do Fleury [" + option.toUpperCase() + "]: ");
-        System.out.println("≈ " + (duration / 1_000_000_000.0) + " ms");
+        System.out.println("≈ " + (duration / 1_000_000_000.0) + " s");
 
         return edges;
     }
