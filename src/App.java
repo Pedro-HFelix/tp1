@@ -54,8 +54,17 @@ public class App {
                 res4 = null;
 
             } else {
-                System.out.println("O grafo não é Euleriano nem Semi-Euleriano.");
+                System.out.println("O grafo é Não-Euleriano.");
                 System.out.println();
+
+                System.out.println(">> Não-Euleriano - Fleury com Tarjan:");
+                List<int[]> res3 = Fleury.getEulerTour(g, "Tarjan");
+                res3 = null;
+
+                System.out.println(">> Não-Euleriano - Fleury com Naive:");
+                List<int[]> res4 = Fleury.getEulerTour(g, "Naive");
+                res4 = null;
+            
             }
         }
     }

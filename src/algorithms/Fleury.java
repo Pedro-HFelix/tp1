@@ -63,14 +63,8 @@ public class Fleury{
                 return !tarjan.isBridge(u, v);          // retorna true se NÃO for ponte (!false = true)
 
             case "naive":
-                // roda o Naive e verifica se (u,v) aparece como ponte
-                for (int[] ponte : Naive.foundBridge(g)) {
-                    if ((ponte[0] == u && ponte[1] == v) || (ponte[0] == v && ponte[1] == u)) {
-                        return false; // é ponte
-                    }
-                }
-                return true;
-
+                // usa o Naive novo, que só testa (u,v)
+                return !Naive.isBridge(g, u, v);
             default:
                 throw new IllegalArgumentException("Método de detecção de ponte inválido: " + method);
         }

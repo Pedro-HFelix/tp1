@@ -4,6 +4,13 @@ import src.Graph;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Implementação do método Naive para encontrar pontes.
+ *
+ * Referência de base:
+ * GeeksforGeeks - Fleury's Algorithm for printing Eulerian Path or Circuit
+ * https://www.geeksforgeeks.org/dsa/fleurys-algorithm-for-printing-eulerian-path/
+ */
 public class Naive {
 
     public static List<int[]> foundBridge(Graph g) {
@@ -28,6 +35,43 @@ public class Naive {
         return bridge;
     }
 
+    // DFS recursivo para marcar vértices alcançáveis
+    private static void dfs(int u, boolean[] visited, Graph g) {
+        visited[u] = true;
+        for (int v : g.adj(u)) {
+            if (!visited[v]) {
+                dfs(v, visited, g);
+            }
+        }
+    }
+
+    // Testa se a aresta (u,v) é ponte
+    public static boolean isBridge(Graph g, int u, int v) {
+        int V = g.V();
+        boolean[] visited = new boolean[V + 1];
+
+        // Conta alcançáveis antes
+        dfs(u, visited, g);
+        int count1 = 0;
+        for (boolean b : visited) if (b) count1++;
+
+        // Remove (u,v)
+        g.removeEdge(u, v);
+
+        // Conta alcançáveis depois
+        visited = new boolean[V + 1];
+        dfs(u, visited, g);
+        int count2 = 0;
+        for (boolean b : visited) if (b) count2++;
+
+        // Recoloca (u,v)
+        g.addEdge(u, v);
+
+        // Se reduziu alcançáveis, é ponte
+        return count2 < count1;
+    }
+
+
     public static void main(String args[]) {
         // Cria os grafos dos exemplos
         System.out.println("Aplicando o Naive no primeiro grafo (Bridge1):");
@@ -43,6 +87,17 @@ public class Naive {
             System.out.println("Aresta-ponte encontrada: (" + pontes[0] + ", " + pontes[1] + ")");
         }
         System.out.println();
+
+        System.out.println("Naive novo (isBridge):");
+        for (int u = 1; u <= g1.V(); u++) {
+            for (int v : g1.adj(u)) {
+                if (u < v && isBridge(g1, u, v)) {
+                    System.out.println("Aresta-ponte encontrada: (" + u + ", " + v + ")");
+                }
+            }
+        }
+        System.out.println();
+
 
         System.out.println("Aplicando o Naive no segundo grafo (Bridge2):");
         Graph g2 = new Graph(7);
@@ -60,6 +115,16 @@ public class Naive {
         }
         System.out.println();
 
+        System.out.println("Naive novo (isBridge):");
+        for (int u = 1; u <= g2.V(); u++) {
+            for (int v : g2.adj(u)) {
+                if (u < v && isBridge(g2, u, v)) {
+                    System.out.println("Aresta-ponte encontrada: (" + u + ", " + v + ")");
+                }
+            }
+        }
+
+        System.out.println();
         System.out.println("Aplicando o Naive no terceiro grafo (Bridge3):");
         Graph g3 = new Graph(4);
         g3.addEdge(1, 2);
@@ -69,5 +134,16 @@ public class Naive {
         for (int[] pontes : foundBridge(g3)){
             System.out.println("Aresta-ponte encontrada: (" + pontes[0] + ", " + pontes[1] + ")");
         }
+
+        System.out.println();
+        System.out.println("Naive novo (isBridge):");
+        for (int u = 1; u <= g3.V(); u++) {
+            for (int v : g3.adj(u)) {
+                if (u < v && isBridge(g3, u, v)) {
+                    System.out.println("Aresta-ponte encontrada: (" + u + ", " + v + ")");
+                }
+            }
+        }
+
     }
 }
