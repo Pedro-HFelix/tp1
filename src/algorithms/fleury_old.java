@@ -1,7 +1,8 @@
 package src.algorithms;
 
 import java.util.*;
-import src.Graph;
+
+import src.graphItens.Graph;
 /**
  * Implementação do Algoritmo de Fleury para encontrar caminho/ciclo Euleriano.
  *

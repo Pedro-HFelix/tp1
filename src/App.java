@@ -2,6 +2,8 @@ package src;
 
 import java.util.List;
 import src.algorithms.*;
+import src.graphItens.FileGraph;
+import src.graphItens.Graph;
 
 public class App {
     public static void main(String[] args) {
@@ -18,9 +20,9 @@ public class App {
                 "src/g10000_euleriano.txt",
                 "src/g10000_semi.txt",
                 "src/g10000_nao.txt",
-                "src/g100000_euleriano.txt",
-                "src/g100000_semi.txt",
-                "src/g100000_nao.txt"
+                // "src/g100000_euleriano.txt",
+                // "src/g100000_semi.txt",
+                // "src/g100000_nao.txt"
         };
 
         for (String nomeArquivo : arquivos) {

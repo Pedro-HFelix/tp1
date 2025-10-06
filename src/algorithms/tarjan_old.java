@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import src.Graph;
+import src.graphItens.Graph;
 /**
  * Implementação do Algoritmo de Tarjan para detecção de pontes em grafos.
  *

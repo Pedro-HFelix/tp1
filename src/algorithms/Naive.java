@@ -1,8 +1,9 @@
 package src.algorithms;
 
-import src.Graph;
 import java.util.ArrayList;
 import java.util.List;
+
+import src.graphItens.Graph;
 
 /**
  * Implementação do método Naive para encontrar pontes.

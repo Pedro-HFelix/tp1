@@ -2,7 +2,7 @@ package src.algorithms;
 
 import java.util.*;
 
-import src.Graph;
+import src.graphItens.Graph;
 
 /**
  * Implementação do Algoritmo de Tarjan para detecção de pontes em grafos.
